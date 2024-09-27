@@ -1,0 +1,14 @@
+Field,Label,Value
+created,Created,2017-10-20T19:50:26.161969
+description,Description,"Spreadsheet listing airports in Australia. Unverified member-uploaded data. Note that this data comes live from the web site, and can change at any time."
+format,File Format,CSV
+download_url,Download URL,https://ourairports.com/countries/AU/airports.hxl
+id,Resource ID,711901ea-3472-4227-9b10-bcfa950514da
+last_modified,Updated,2020-07-27T05:10:58.446063
+metadata_modified,Metadata Updated,2021-06-03T16:11:36.490678
+microdata,Microdata,False
+dataset_id,Dataset ID,6fee2ce0-5e8e-4138-a794-f5e9052f38c6
+resource_type,Resource Type,api
+name,Resource Name,List of airports in Australia (HXL tags)
+mimetype,MIME Type,
+size,Size,0.0B
