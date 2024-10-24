@@ -1,90 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airports in Australia</title>  <!-- Page title -->
-  <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f4f4f4;
-    }
-    h1 {
-      text-align: center;
-      margin-top: 20px;
-    }
-    p {
-      text-align: center;
-      max-width: 800px;
-      margin: 10px 20px;
-    }
-    #vis {
-      margin: 20px;
-      padding: 10px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Airline Traffic</title>
+
+    <!-- Vega and Vega-Lite Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #e6f7ff;
+            margin: 0;
+            padding: 0;
+            color: #1d1d1f;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #00008b;
+            padding: 10px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        .graph-description-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: stretch;
+            justify-content: space-between;
+        }
+
+        .graph-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden; /* Prevents map overflow */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-container {
+            flex: 1;
+            min-width: 785px;
+            max-width: 500px;
+            min-height: 600px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .graph {
+            width: 100%;
+            height: 100%;
+        }
+
+        .description {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .graph5-wrapper {
+            overflow: hidden;
+            max-width: 100%;
+            padding-bottom: 15px;
+        }
+
+        .graph-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .graph-row > div {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+        }
+
+        .vega-embed {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .pie-description {
+            flex: 1;
+            min-width: 300px;
+            max-width: auto;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .graph-description-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .graph-container,
+            .description {
+                max-width: auto;
+            }
+
+            .graph-row {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <h1>Airports in Australia</h1>  <!-- Map title -->
-  
-  <p>This map shows the airports located across Australia. The color of each airport is based on its elevation in feet. You can hover over each circle to see detailed information about the airport, including its ID, code, type, name, and the city it serves.</p> <!-- Brief description -->
+    <h1>Australian Airline Traffic</h1>
 
-  <div id="vis"></div> <!-- Correctly closing the div -->
+    <div class="container">
+        <div class="graph-description-container">
+            <div class="map-container">
+                <div class="graph" id="graph1"></div>
+            </div>
+            <div class="description">
+                <h2>This interactive map displays airports across Australia, with each airport represented by a circle
+                    whose color reflects elevation.</h2>
+                <h3>Users can hover over an airport to reveal details like ID, code, type, name, and municipality.</h3>
+                <p>This visualization helps explore the geographic distribution and characteristics of Australian
+                    airports, including elevation differences and types.</p>
+            </div>
+        </div>
 
-  <script>
-    const spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "width": 600,
-      "height": 400,
-      "title": "Airports in Australia",
-      "projection": {"type": "equirectangular"},
-      "layer": [
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/ne_110m%20(1).json",
-            "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
-          },
-          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
-        },
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/airports_dataset_3179_ass2.csv"
-          },
-          "mark": {"type": "circle"},
-          "encoding": {
-            "longitude": {"field": "longitude_deg", "type": "quantitative"},
-            "latitude": {"field": "latitude_deg", "type": "quantitative"},
-            "color": {
-              "field": "elevation_ft",
-              "title": "Elevation (ft)",
-              "type": "quantitative"
-            },
-            "tooltip": [
-              {"field": "541", "title": "Airport ID"},
-              {"field": "ident", "title": "Airport Code"},
-              {"field": "type", "title": "Type of Airport"},
-              {"field": "name", "title": "Airport Name"},
-              {"field": "municipality", "title": "City"}
-            ]
-          }
+        <div class="graph-description-container">
+            <div class="description">
+                <p>This interactive line chart displays the total aircraft traffic per airport from 2016 to 2022. Each
+                    line represents an individual airport, with the X-axis showing the years and the Y-axis showing the
+                    total number of flights. The chart allows users to select specific airports using a dropdown menu
+                    labeled "Select Airports," helping them focus on one or multiple airports at a time. When selected,
+                    the relevant lines become more prominent, while non-selected airports appear with reduced opacity.
+
+                    Users can hover over points on the lines to view detailed tooltips, showing the airport name, year,
+                    and total flights for that data point.</p>
+            </div>
+            <div class="graph-container">
+                <div class="graph" id="graph2"></div>
+            </div>
+        </div>
+
+        <div class="graph-description-container">
+            <div class="graph-container">
+                <div class="graph" id="graph3"></div>
+            </div>
+            <div class="graph-container">
+                <div class="graph" id="graph4"></div>
+            </div>
+        </div>
+
+        <div class="graph-description-container">
+            <div class="description">
+                <p>An interactive visualization displaying monthly domestic and international passenger traffic per
+                    airport for selected years (2009-2013) using two area charts. Users can select a year to compare
+                    monthly trends, with data color-coded by airport.</p>
+            </div>
+            <div class="description">
+                <p>An interactive bar chart showing the number of airports per local region, with filtering by airport
+                    type. Users select types to explore distribution patterns, with labels displaying counts.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="graph5-wrapper">
+                <div class="graph-row" id="graph5"></div>
+            </div>
+            <div class="pie-description">
+                <p>This visualization presents faceted pie charts showing passenger traffic per airport across various
+                    categories. A state selection dropdown allows users to filter airports by state.</p>
+            </div>
+        </div>
+
+        <div class="graph-description-container"></div>
+            <div class="pie-description">
+                References: <a href="https://data.humdata.org/dataset/ourairports-aus">Our Airports Australia Dataset</a> and
+                <a href="https://www.bitre.gov.au/publications/ongoing/airport_traffic_data">BITRE Airport Traffic
+                    Data</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function embedGraph(id, filePath) {
+            vegaEmbed(id, filePath, {
+                actions: true,
+                autosize: { type: 'fit', resize: true }
+            }).catch(console.error);
         }
-      ]
-    };
 
-    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
-  </script>
+        embedGraph("#graph1", "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/visualization1.vg.json");
+        embedGraph("#graph2", "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/visualization2.vg.json");
+        embedGraph("#graph3", "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/visualization3.vg.json");
+        embedGraph("#graph4", "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/visualization4.vg.json");
+        embedGraph("#graph5", "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/visualization5.vg.json");
+    </script>
 
 </body>
+
 </html>
