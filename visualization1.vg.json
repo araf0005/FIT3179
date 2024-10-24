@@ -1,0 +1,148 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 600,
+  "height": 600,
+  "title": "Airports in Australia",
+  "projection": {
+    "type": "equirectangular",
+    "scale": 650,
+    "center": [135, -25]
+  },
+  "params": [
+    {
+      "name": "elevationThreshold",
+      "value": 0,
+      "bind": {
+        "input": "range",
+        "min": 0,
+        "max": 6000,
+        "step": 100,
+        "name": "Filter Elevation (ft): "
+      }
+    }
+  ],
+  "layer": [
+    {
+      "data": {
+        "graticule": true
+      },
+      "mark": {
+        "type": "geoshape",
+        "stroke": "lightgray",
+        "strokeWidth": 0.5
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/ne_110m%20(1).json",
+        "format": {
+          "type": "topojson",
+          "feature": "ne_110m_admin_0_countries"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "lightgray",
+        "stroke": "white"
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/airports_dataset_3179_ass2.csv"
+      },
+      "transform": [
+        {
+          "filter": "datum.elevation_ft >= elevationThreshold"
+        }
+      ],
+      "mark": {
+        "type": "circle"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "longitude_deg",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "latitude_deg",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "elevation_ft",
+          "title": "Elevation (ft)",
+          "type": "quantitative"
+        },
+        "size": {
+          "field": "elevation_ft",
+          "type": "quantitative",
+          "title": "Circle Size"
+        },
+        "tooltip": [
+          {
+            "field": "541",
+            "title": "Airport ID"
+          },
+          {
+            "field": "ident",
+            "title": "Airport Code"
+          },
+          {
+            "field": "type",
+            "title": "Type of Airport"
+          },
+          {
+            "field": "name",
+            "title": "Airport Name"
+          },
+          {
+            "field": "municipality",
+            "title": "City"
+          },
+          {
+            "field": "elevation_ft",
+            "title": "Elevation (ft)"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "longitude": 151.2093,
+            "latitude": -33.8688,
+            "label": "High Elevation Reigon"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 5,
+        "dy": -5
+      },
+      "encoding": {
+        "longitude": {
+          "field": "longitude",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "latitude",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        },
+        "color": {
+          "value": "black"
+        },
+        "fontSize": {
+          "value": 12
+        }
+      }
+    }
+  ],
+  "config": {
+    "background": "#e0f7fa"
+  }
+}

@@ -1,0 +1,100 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Monthly Domestic and International Passenger Traffic for selected year.",
+    "params": [
+      {
+        "name": "year_select",
+        "value": 2009,
+        "bind": {
+          "input": "select",
+          "options": [2009, 2010, 2011, 2012, 2013],
+          "labels": ["2009", "2010", "2011", "2012", "2013"],
+          "name": "Select Year: "
+        }
+      }
+    ],
+    "vconcat": [
+      {
+        "title": "Total Domestic Passengers",
+        "data": {
+          "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/PassengerTraffic%20Updated%20for%20areachart.csv"
+        },
+        "transform": [
+          {"filter": "datum.Year == year_select"},
+          {"calculate": "datetime(datum.Year, datum.Month, 1)", "as": "MonthDate"}
+        ],
+        "mark": {
+          "type": "area",
+          "line": true,
+          "point": true
+        },
+        "encoding": {
+          "x": {
+            "field": "MonthDate",
+            "type": "temporal",
+            "timeUnit": "month",
+            "title": "Month",
+            "axis": {"format": "%B"}
+          },
+          "y": {
+            "aggregate": "sum",
+            "field": "Domestic Total",
+            "type": "quantitative",
+            "title": "Total Passengers Domestic"
+          },
+          "color": {
+            "field": "AIRPORT",
+            "type": "nominal",
+            "title": "Airport"
+          },
+          "tooltip": [
+            {"field": "AIRPORT", "type": "nominal", "title": "Airport"},
+            {"field": "Year", "type": "ordinal", "title": "Year"},
+            {"field": "MonthDate", "type": "temporal", "title": "Month", "timeUnit": "month"},
+            {"field": "Domestic Total", "type": "quantitative", "title": "Total Passengers Domestic"}
+          ]
+        }
+      },
+      {
+        "title": "Total International Passengers",
+        "data": {
+          "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/PassengerTraffic%20Updated%20for%20areachart.csv"
+        },
+        "transform": [
+          {"filter": "datum.Year == year_select"},
+          {"calculate": "datetime(datum.Year, datum.Month, 1)", "as": "MonthDate"}
+        ],
+        "mark": {
+          "type": "area",
+          "line": true,
+          "point": true
+        },
+        "encoding": {
+          "x": {
+            "field": "MonthDate",
+            "type": "temporal",
+            "timeUnit": "month",
+            "title": "Month",
+            "axis": {"format": "%B"}
+          },
+          "y": {
+            "aggregate": "sum",
+            "field": "International Total",
+            "type": "quantitative",
+            "title": "Total Passengers International"
+          },
+          "color": {
+            "field": "AIRPORT",
+            "type": "nominal",
+            "title": "Airport"
+          },
+          "tooltip": [
+            {"field": "AIRPORT", "type": "nominal", "title": "Airport"},
+            {"field": "Year", "type": "ordinal", "title": "Year"},
+            {"field": "MonthDate", "type": "temporal", "title": "Month", "timeUnit": "month"},
+            {"field": "International Total", "type": "quantitative", "title": "Total Passengers International"}
+          ]
+        }
+      }
+    ]
+  }  

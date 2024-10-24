@@ -1,0 +1,81 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Faceted pie charts showing passenger traffic per airport, with state selection.",
+  "data": {
+    "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/PassengerTraffic.csv"
+  },
+  "transform": [
+    {
+      "lookup": "AIRPORT",
+      "from": {
+        "data": {
+          "values": [
+            {"AIRPORT": "ADELAIDE", "STATE": "SA"},
+            {"AIRPORT": "BALLINA", "STATE": "NSW"},
+            {"AIRPORT": "BRISBANE", "STATE": "QLD"},
+            {"AIRPORT": "CAIRNS", "STATE": "QLD"},
+            {"AIRPORT": "CANBERRA", "STATE": "ACT"},
+            {"AIRPORT": "DARWIN", "STATE": "NT"},
+            {"AIRPORT": "GOLD COAST", "STATE": "QLD"},
+            {"AIRPORT": "HAMILTON ISLAND", "STATE": "QLD"},
+            {"AIRPORT": "HOBART", "STATE": "TAS"},
+            {"AIRPORT": "KARRATHA", "STATE": "WA"},
+            {"AIRPORT": "LAUNCESTON", "STATE": "TAS"},
+            {"AIRPORT": "MACKAY", "STATE": "QLD"},
+            {"AIRPORT": "MELBOURNE", "STATE": "VIC"},
+            {"AIRPORT": "NEWCASTLE", "STATE": "NSW"},
+            {"AIRPORT": "PERTH", "STATE": "WA"},
+            {"AIRPORT": "PROSERPINE", "STATE": "QLD"},
+            {"AIRPORT": "ROCKHAMPTON", "STATE": "QLD"},
+            {"AIRPORT": "SUNSHINE COAST", "STATE": "QLD"},
+            {"AIRPORT": "SYDNEY", "STATE": "NSW"},
+            {"AIRPORT": "TOWNSVILLE", "STATE": "QLD"}
+          ]
+        },
+        "key": "AIRPORT",
+        "fields": ["STATE"]
+      }
+    },
+    {
+      "fold": ["INBOUND DOM", "OUTBOUND DOM", "INBOUND INTERNAT", "OUTBOUND INTERNAT"],
+      "as": ["category", "value"]
+    },
+    {
+      "aggregate": [{"op": "sum", "field": "value", "as": "total_value"}],
+      "groupby": ["AIRPORT", "category", "STATE"]
+    },
+    {
+      "filter": "(!state_selection || datum.STATE === state_selection)"
+    }
+  ],
+  "params": [
+    {
+      "name": "state_selection",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "options": [null, "ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"],
+        "labels": ["All", "ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"],
+        "name": "Select State: "
+      }
+    }
+  ],
+  "facet": {
+    "field": "AIRPORT",
+    "type": "nominal",
+    "columns": 4
+  },
+  "spec": {
+    "mark": {"type": "arc", "innerRadius": 0},
+    "encoding": {
+      "theta": {"field": "total_value", "type": "quantitative"},
+      "color": {"field": "category", "type": "nominal"},
+      "tooltip": [
+        {"field": "AIRPORT", "type": "nominal", "title": "Airport"},
+        {"field": "category", "type": "nominal", "title": "Category"},
+        {"field": "total_value", "type": "quantitative", "title": "Total Value"}
+      ]
+    }
+  },
+  "view": {"stroke": null}
+}

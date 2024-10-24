@@ -1,0 +1,119 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/(Row%202%20removed)airports_dataset_3179_ass2.csv"
+  },
+  "transform": [
+    {
+      "filter": "AirportTypeSelection == null || datum.type == AirportTypeSelection"
+    }
+  ],
+  "params": [
+    {
+      "name": "AirportTypeSelection",
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "closed",
+          "heliport",
+          "large_airport",
+          "medium_airport",
+          "seaplane_base",
+          "small_airport"
+        ],
+        "labels": [
+          "Show All",
+          "Closed",
+          "Heliport",
+          "Large Airport",
+          "Medium Airport",
+          "Seaplane Base",
+          "Small Airport"
+        ],
+        "name": "Select Airport Type: "
+      }
+    }
+  ],
+  "layer": [
+    {
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "local_region",
+          "type": "nominal",
+          "title": "Local Region"
+        },
+        "y": {"aggregate": "count", "title": "Number of Airports"},
+        "color": {
+          "field": "type",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "closed",
+              "heliport",
+              "large_airport",
+              "medium_airport",
+              "seaplane_base",
+              "small_airport"
+            ],
+            "range": [
+              "#d62728",
+              "#1f77b4",
+              "#2ca02c",
+              "#ff7f0e",
+              "#9467bd",
+              "#8c564b"
+            ]
+          },
+          "title": "Type of Airport",
+          "legend": {"title": "Type of Airport"}
+        },
+        "tooltip": [
+          {"field": "local_region", "type": "nominal", "title": "Local Region"},
+          {"field": "type", "type": "nominal", "title": "Type of Airport"},
+          {
+            "aggregate": "count",
+            "type": "quantitative",
+            "title": "Number of Airports"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "middle",
+        "dy": -10,
+        "color": "black"
+      },
+      "encoding": {
+        "text": {"aggregate": "count", "field": "type", "type": "quantitative"},
+        "x": {"field": "local_region", "type": "nominal"},
+        "y": {"aggregate": "count", "type": "quantitative"}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "top",
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "color": "brown", 
+        "dx": 0,
+        "dy": -15
+      },
+      "encoding": {
+        "text": {
+          "value": "QLD has the highest total number of airports."
+        },
+        "x": {"value": 200}, 
+        "y": {"value": 20}
+      }
+    }
+  ],
+  "width": 400,
+  "height": 400
+}

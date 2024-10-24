@@ -1,0 +1,90 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Line chart showing total aircraft traffic per airport from 2016 to 2022, with airport selection.",
+  "data": {
+    "url": "https://raw.githubusercontent.com/araf0005/FIT3179/refs/heads/main/Cleaned%20Aircraft%20Traffic.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "toNumber(datum['Year'])",
+      "as": "parsed_year"
+    },
+    {
+      "filter": "isValid(datum['parsed_year']) && isValid(datum['total_flights'])"
+    },
+    {
+      "filter": "datum['parsed_year'] >= 2016 && datum['parsed_year'] <= 2022"
+    }
+  ],
+  "selection": {
+    "airport_select": {
+      "type": "multi",
+      "fields": ["AIRPORT"],
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "ADELAIDE",
+          "BALLINA",
+          "BRISBANE",
+          "CAIRNS",
+          "CANBERRA",
+          "DARWIN",
+          "GOLD COAST",
+          "HAMILTON ISLAND",
+          "HOBART",
+          "KARRATHA",
+          "LAUNCESTON",
+          "MACKAY",
+          "MELBOURNE",
+          "NEWCASTLE",
+          "PERTH",
+          "PROSERPINE",
+          "ROCKHAMPTON",
+          "SUNSHINE COAST",
+          "SYDNEY",
+          "TOWNSVILLE"
+        ],
+        "name": "Select Airports"
+      }
+    }
+  },
+  "mark": {
+    "type": "line",
+    "tooltip": true
+  },
+  "encoding": {
+    "x": {
+      "field": "parsed_year",
+      "type": "quantitative",
+      "title": "Year",
+      "scale": {"domain": [2016, 2022]},
+      "axis": {"format": "d"}
+    },
+    "y": {
+      "field": "total_flights",
+      "type": "quantitative",
+      "title": "Total Aircraft Traffic"
+    },
+    "color": {
+      "field": "AIRPORT",
+      "type": "nominal",
+      "title": "Airport",
+      "legend": {"orient": "right"}
+    },
+    "opacity": {
+      "condition": {"selection": "airport_select", "value": 1},
+      "value": 0.2
+    },
+    "tooltip": [
+      {"field": "AIRPORT", "type": "nominal", "title": "Airport Name"},
+      {"field": "parsed_year", "type": "quantitative", "title": "Year"},
+      {"field": "total_flights", "type": "quantitative", "title": "Total Flights"}
+    ]
+  },
+  "width": 380,
+  "height": 400
+}
